@@ -7,7 +7,7 @@ Based on PHP 7.4 CLI Alpine.
 Features:
 - Composer with prestissimo plugin
 - Deployer with Recipes
-- Very small size (ca. 45 MB)
+- Very small size (ca. 44 MB)
 
 # Usage
 
