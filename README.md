@@ -9,6 +9,8 @@ Features:
 - Deployer with Recipes
 - Very small size (ca. 44 MB)
 
+This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer)
+
 # Usage
 
 Enable Pipelines in `Repository settings` > `Pipelines` > `Settings`.
@@ -28,13 +30,13 @@ pipelines:
           - dep deploy production
 ```
 
-Add `deploy.php` to your repository (cf. [Deployer documentation](https://deployer.org/docs/getting-started.html))
+Add `deploy.php` and `hosts.yml` to your repository (cf. [Deployer documentation](https://deployer.org/docs/getting-started.html))
 
 ## Known issues
 
 ### Access private repositories with your Pipeline SSH Key.
 
-If you want to have access to private repositories during deployment on a remote host and don’t want to setup a private key on this remote host - you could use the Pipeline SSH Key.
+If you want to access private repositories during deployment on a remote host and don’t want to setup a private key on this remote host - you could use the Pipeline SSH Key.
 
 For this to work the SSH Key agent has to be started inside the container and the native Pipeline SSH Key has to be forwarded using the agent.
 
