@@ -51,7 +51,7 @@ To run tests with `composer test` add for example `vendor/bin/pest` to the `scri
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [Releases](../../releases) for more information on what has changed recently.
 
 ## Contributing
 
