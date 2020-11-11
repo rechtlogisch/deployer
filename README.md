@@ -9,8 +9,6 @@ Features:
 - Deployer with Recipes
 - Very small size (ca. 44 MB)
 
-Branch ``next`` contains the current development image of PHP CLI Alpine.
-
 This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer)
 
 # Usage
@@ -65,7 +63,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Krzysztof Tomasz Zembrowski](https://github.com/zembrowski)
 - [All Contributors](../../contributors)
 
 ## License
