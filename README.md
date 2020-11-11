@@ -1,4 +1,4 @@
-# PHP Deployer and Composer for Bitbucket Pipelines
+# PHP with Deployer and Composer
 
 A custom image for Bitbucket Pipelines to install dependencies, run tests and deploy code to remote servers.  
 
@@ -43,11 +43,11 @@ To run tests with `composer test` add for example `vendor/bin/pest` to the `scri
 
 ## PHP modules included
 
-* [List of PHP modules](https://github.com/rechtlogisch/deployer/wiki/List-of-PHP-modules)
+* [List of PHP modules](../../wiki/List-of-PHP-modules)
 
 ## Known issues
 
-* [Access private repositories with your Pipeline SSH Key](https://github.com/rechtlogisch/deployer/wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
+* [Access private repositories with your Pipeline SSH Key](../../wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
 
 ## Changelog
 
