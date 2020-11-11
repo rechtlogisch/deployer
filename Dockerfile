@@ -17,8 +17,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 ## Add Composer vendor into PATH
 ENV PATH $HOME/.composer/vendor/bin:$PATH
 
-## Set user
-USER www-data
+## When set, no output in Pipelines
+#USER www-data
 
 ## Set working directory
 WORKDIR $HOME
