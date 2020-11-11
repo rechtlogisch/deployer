@@ -1,13 +1,15 @@
 # PHP Deployer and Composer for Bitbucket Pipelines
 
-Custom image for Bitbucket Pipelines.
+A custom image for Bitbucket Pipelines to install dependencies, run tests and deploy code to remote servers.  
 
-Based on PHP 7.4 CLI Alpine.
+Based on the current stable PHP CLI Alpine.
 
 Features:
-- Composer with prestissimo plugin
+- Composer 2
 - Deployer with Recipes
 - Very small size (ca. 44 MB)
+
+Branch ``next`` contains the current development image of PHP CLI Alpine.
 
 This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer)
 
@@ -24,7 +26,14 @@ image: rechtlogisch/deployer
 pipelines:
   default:
     - step:
-        name: Deploy production
+        name: Test
+        caches:
+          - composer
+        script:
+          - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts 
+          - composer test
+    - step:
+        name: Deploy
         deployment: production
         script:
           - dep deploy production
@@ -32,19 +41,33 @@ pipelines:
 
 Add `deploy.php` and `hosts.yml` to your repository (cf. [Deployer documentation](https://deployer.org/docs/getting-started.html))
 
+To run tests with `composer test` add for example `vendor/bin/pest` to the `scripts` property of your `composer.json` (cf. [Composer documentation](https://getcomposer.org/doc/articles/scripts.md#defining-scripts) and [Pest PHP](https://pestphp.com))
+
+## PHP modules included
+
+* [List of PHP modules](https://github.com/rechtlogisch/deployer/wiki/List-of-PHP-modules)
+
 ## Known issues
 
-### Access private repositories with your Pipeline SSH Key.
+* [Access private repositories with your Pipeline SSH Key](https://github.com/rechtlogisch/deployer/wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
 
-If you want to access private repositories during deployment on a remote host and don’t want to setup a private key on this remote host - you could use the Pipeline SSH Key.
+## Changelog
 
-For this to work the SSH Key agent has to be started inside the container and the native Pipeline SSH Key has to be forwarded using the agent.
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-Add the following lines to your `bitbucket-pipelines.yml` scripts before the deploy line:
+## Contributing
 
-```
-- eval $(ssh-agent)
-- ssh-add -k $(head -n 1 ~/.ssh/config | sed 's/IdentityFile //')
-```
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-Do not forget to add the public key of your Pipeline as an Access Key of the repository you want to retrieve during deployment.
+## Security Vulnerabilities
+
+Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+
+## Credits
+
+- [:author_name](https://github.com/:author_username)
+- [All Contributors](../../contributors)
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
