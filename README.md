@@ -7,7 +7,7 @@ Based on the current stable PHP CLI Alpine.
 Features:
 - Composer 2
 - Deployer with Recipes
-- Very small size (ca. 44 MB)
+- Very small size (ca. 30 MB)
 
 This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer)
 
