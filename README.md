@@ -1,5 +1,8 @@
 # PHP with Deployer and Composer
 
+[![Docker Cloud automated build](https://img.shields.io/docker/cloud/automated/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer)
+[![Docker Cloud build status](https://img.shields.io/docker/cloud/build/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer/builds)
+
 A custom image for Bitbucket Pipelines to install dependencies, run tests and deploy code to remote servers.  
 
 Based on the current stable PHP CLI Alpine.
@@ -7,7 +10,7 @@ Based on the current stable PHP CLI Alpine.
 Features:
 - Composer 2
 - Deployer with Recipes
-- Very small size (ca. 30 MB)
+- Very small size
 
 This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer)
 
