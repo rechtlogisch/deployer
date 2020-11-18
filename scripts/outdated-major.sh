@@ -9,6 +9,13 @@
 # Compare direct outdated dependencies with minor outdated dependencies
 # if the count is different return an non-zero exit code
 
+## Prevent from running without composer.json
+if [ ! -f composer.json ]; then
+    echo "The project seems to not contain a composer.json file. Script could not run"
+    # Exit code 1 Generic/unknown error code (https://getcomposer.org/doc/03-cli.md#process-exit-codes)
+    exit 1
+fi
+
 COMMAND="composer outdated --direct"
 
 COUNT_DIRECT=$($COMMAND | wc -l)
