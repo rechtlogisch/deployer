@@ -3,7 +3,7 @@
 [![Docker Cloud automated build](https://img.shields.io/docker/cloud/automated/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer)
 [![Docker Cloud build status](https://img.shields.io/docker/cloud/build/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer/builds)
 
-A custom image for Bitbucket Pipelines to install dependencies, run tests and deploy code to remote servers.  
+A custom image for CI Pipelines to install dependencies, run tests and deploy code to remote servers.  
 
 Based on the current stable PHP CLI Alpine.
 
@@ -16,33 +16,10 @@ This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/
 
 # Usage
 
-Enable Pipelines in `Repository settings` > `Pipelines` > `Settings`.
+Feel free to use `rechtlogisch/deployer` with any Pipeline of your choice. You'll find usage examples in the [Wiki](../../wiki) for the following service providers:
 
-Add `bitbucket-pipelines.yml` to your repository.
-
-Example:
-```
-image: rechtlogisch/deployer
-
-pipelines:
-  default:
-    - step:
-        name: Test
-        caches:
-          - composer
-        script:
-          - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts 
-          - composer test
-    - step:
-        name: Deploy
-        deployment: production
-        script:
-          - dep deploy production
-```
-
-Add `deploy.php` and `hosts.yml` to your repository (cf. [Deployer documentation](https://deployer.org/docs/getting-started.html))
-
-To run tests with `composer test` add for example `vendor/bin/pest` to the `scripts` property of your `composer.json` (cf. [Composer documentation](https://getcomposer.org/doc/articles/scripts.md#defining-scripts) and [Pest PHP](https://pestphp.com))
+* [Bitbucket](../../wiki/Bitbucket-Pipeline)
+* [GitLab](../../wiki/GitLab-Pipeline)
 
 ## PHP modules included
 
