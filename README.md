@@ -2,17 +2,18 @@
 
 [![Docker Cloud automated build](https://img.shields.io/docker/cloud/automated/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer)
 [![Docker Cloud build status](https://img.shields.io/docker/cloud/build/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer/builds)
+[![Docker image size and layers](https://images.microbadger.com/badges/image/rechtlogisch/deployer.svg)](https://hub.docker.com/r/rechtlogisch/deployer/tags)
 
 A custom image for CI Pipelines to install dependencies, run tests and deploy code to remote servers.  
 
-Based on the current stable PHP CLI Alpine.
+Based on the current stable PHP CLI Alpine ([cli-alpine](https://github.com/docker-library/docs/blob/master/php/README.md#supported-tags-and-respective-dockerfile-links)).
 
 Features:
 - Composer 2
 - Deployer with Recipes
 - Very small size
 
-This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer)
+This Dockerfile is automagically built on [Docker Hub](https://hub.docker.com/r/rechtlogisch/deployer). A separately hosted script checks for a new stable PHP version at ~5am UTC every day and triggers a new build, when necessary.
 
 # Usage
 
