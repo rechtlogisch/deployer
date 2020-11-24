@@ -14,7 +14,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=$PATH_BIN 
     rmdir /var/www/html
 
 ## Add Composer vendor into PATH
-ENV PATH ~/.composer/vendor/bin:$PATH
+ENV PATH /root/.composer/vendor/bin:$PATH
 
 ## Copy scripts
 COPY scripts/*.sh $PATH_BIN
