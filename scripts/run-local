@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Please provide exactly two arguments"
+    echo "Usage: run-local path \"php -v\""
+    exit 1
+fi
+
+MOUNT=$1
+COMMAND=$2
+
+docker run -it \
+  --rm \
+  --name deployer \
+  -v "$MOUNT":/var/www \
+  rechtlogisch/deployer:latest \
+  $COMMAND
