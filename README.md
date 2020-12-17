@@ -2,6 +2,7 @@
 
 [![Docker Cloud automated build](https://img.shields.io/docker/cloud/automated/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer)
 [![GitHub Workflow actions](https://github.com/rechtlogisch/deployer/workflows/Publish%20images/badge.svg)](https://github.com/rechtlogisch/deployer/actions)
+[![Docker Cloud build status](https://img.shields.io/docker/cloud/build/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer/builds)
 [![Docker image size :latest](https://img.shields.io/docker/image-size/rechtlogisch/deployer/latest)](https://hub.docker.com/r/rechtlogisch/deployer/tags)
 [![Docker image layers :latest](https://img.shields.io/microbadger/layers/rechtlogisch/deployer)](https://hub.docker.com/r/rechtlogisch/deployer/tags)
 
