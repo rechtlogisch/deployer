@@ -12,13 +12,14 @@ RUN apk add -q --no-cache openssh-client
 COPY scripts/*.sh $PATH_BIN/
 
 ## Install Composer, Deployer with Recipes and remove unneeded files
-ARG VERSION_DEPLOYER="7.0.0-beta.11"
+ARG VERSION_DEPLOYER="7.0.0-beta.12"
 RUN composer-install.sh && \
-    composer -q --prefer-dist --no-ansi --no-interaction --no-progress global require "deployer/deployer:^${VERSION_DEPLOYER}" && \
+    composer -q --prefer-dist --no-ansi --no-interaction --no-progress global require "deployer/dist:^${VERSION_DEPLOYER}" && \
     rmdir /var/www/html
 
 ## Add Composer vendor into PATH
-ENV PATH /root/.composer/vendor/bin:$PATH
+ENV COMPOSER_PATH /root/.composer
+ENV PATH $COMPOSER_PATH/vendor/bin:$PATH
 
 ## When set, no output in Pipelines
 #USER www-data
