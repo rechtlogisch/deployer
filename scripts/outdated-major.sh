@@ -7,7 +7,7 @@
 
 ## Logic
 # Compare direct outdated dependencies with minor outdated dependencies
-# if the count is different return an non-zero exit code
+# if the count is different return a non-zero exit code
 
 ## Prevent from running without composer.json
 if [ ! -f composer.json ]; then
@@ -31,6 +31,7 @@ COUNT_MINOR=$($COMMAND --minor-only | wc -l)
 if [ "$COUNT_MINOR" -ne "$COUNT_DIRECT" ]; then
     DIFFERENCE=$((COUNT_DIRECT - COUNT_MINOR))
     echo "$DIFFERENCE outdated major dependencies detected"
+    echo "$COUNT_DIRECT"
     # A non-zero exit code has to be used; here the count of detected relevant outdated dependencies
     exit "$DIFFERENCE"
 fi
