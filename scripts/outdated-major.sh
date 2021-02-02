@@ -30,7 +30,10 @@ COUNT_MINOR=$($COMMAND --minor-only | wc -l)
 
 if [ "$COUNT_MINOR" -ne "$COUNT_DIRECT" ]; then
     DIFFERENCE=$((COUNT_DIRECT - COUNT_MINOR))
-    echo "$DIFFERENCE outdated major dependencies detected"
+    if [ "$DIFFERENCE" -eq 1 ]; then
+        TEXT_DEPENDENCY="dependency"
+    fi
+    echo "Outdated major ${TEXT_DEPENDENCY:-dependencies} detected: $DIFFERENCE"
     echo "$LIST_DIRECT"
     # A non-zero exit code has to be used; here the count of detected relevant outdated dependencies
     exit "$DIFFERENCE"
