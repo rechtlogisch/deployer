@@ -17,8 +17,8 @@ if [ ! -f composer.json ]; then
 fi
 
 COMMAND="composer outdated --direct"
-
-COUNT_DIRECT=$($COMMAND | wc -l)
+LIST_DIRECT="$($COMMAND)"
+COUNT_DIRECT=$(echo "$LIST_DIRECT" | sed '/^\s*$/d' | wc -l)
 
 if [ "$COUNT_DIRECT" -eq 0 ]; then
     echo "No outdated direct dependencies found"
@@ -31,7 +31,7 @@ COUNT_MINOR=$($COMMAND --minor-only | wc -l)
 if [ "$COUNT_MINOR" -ne "$COUNT_DIRECT" ]; then
     DIFFERENCE=$((COUNT_DIRECT - COUNT_MINOR))
     echo "$DIFFERENCE outdated major dependencies detected"
-    echo "$COUNT_DIRECT"
+    echo "$LIST_DIRECT"
     # A non-zero exit code has to be used; here the count of detected relevant outdated dependencies
     exit "$DIFFERENCE"
 fi
