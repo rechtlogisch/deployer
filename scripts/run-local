@@ -13,5 +13,5 @@ docker run -it \
   --rm \
   --name deployer \
   -v "$MOUNT":/var/www \
-  rechtlogisch/deployer:latest \
+  ghcr.io/rechtlogisch/deployer:"${IMAGE_TAG:-latest}" \
   $COMMAND

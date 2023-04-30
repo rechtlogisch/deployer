@@ -11,10 +11,10 @@ RUN apk add -q --no-cache openssh-client
 ## Copy scripts
 COPY scripts/*.sh $PATH_BIN/
 
-## Install Composer, Deployer with Recipes and remove unneeded files
-ARG VERSION_DEPLOYER="7.0.0-beta.12"
-RUN composer-install.sh && \
-    composer -q --prefer-dist --no-ansi --no-interaction --no-progress global require "deployer/dist:^${VERSION_DEPLOYER}" && \
+## Install Composer, Deployer and remove unneeded files
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+ARG VERSION_DEPLOYER="7.3"
+RUN composer -q --prefer-dist --no-ansi --no-interaction --no-progress global require "deployer/deployer:^${VERSION_DEPLOYER}" && \
     rmdir /var/www/html
 
 ## Add Composer vendor into PATH
