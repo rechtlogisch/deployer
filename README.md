@@ -14,36 +14,36 @@ Features:
 - [Deployer 7](https://deployer.org/)
 - Very small size
 
-This Dockerfile is automagically built with a [GitHub Workflow](.github/workflows/build-and-publish.yml). A separately hosted script checks for the newest stable PHP versions at ~5am UTC every day and triggers builds, when a new official PHP docker image is available.
+This Dockerfile is automagically built with a [GitHub Workflow](https://github.com/rechtlogisch/deployer/actions/workflows/build-and-publish.yml). A separately hosted script checks for the newest stable PHP versions at ~5am UTC every day and triggers builds, when a new official PHP docker image is available.
 
 # Usage
 
-Feel free to use `ghcr.io/rechtlogisch/deployer` or `rechtlogisch/deployer` with any Pipeline of your choice. You'll find usage examples in the [Wiki](../../wiki) for the following service providers:
+Feel free to use `ghcr.io/rechtlogisch/deployer` or `rechtlogisch/deployer` with any Pipeline of your choice. You'll find usage examples in the [Wiki](https://github.com/rechtlogisch/deployer/wiki) for the following service providers:
 
-* [Bitbucket](../../wiki/Bitbucket-Pipeline)
-* [GitLab](../../wiki/GitLab-Pipeline)
+* [Bitbucket](https://github.com/rechtlogisch/deployer/wiki/Bitbucket-Pipeline)
+* [GitLab](https://github.com/rechtlogisch/deployer/wiki/GitLab-Pipeline)
 
 ## PHP modules included
 
-* [List of PHP modules](../../wiki/List-of-PHP-modules)
+* [List of PHP modules](https://github.com/rechtlogisch/deployer/wiki/List-of-PHP-modules)
 
 ## Known issues
 
-* [Access private repositories with your Pipeline SSH Key](../../wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
+* [Access private repositories with your Pipeline SSH Key](https://github.com/rechtlogisch/deployer/wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
 
 ## Contributing
 
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/rechtlogisch/deployer/blob/main/.github/CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please review [our security policy](https://github.com/rechtlogisch/deployer/security/policy) on how to report security vulnerabilities.
 
 ## Credits
 
 - [Krzysztof Tomasz Zembrowski](https://github.com/zembrowski)
-- [All Contributors](../../contributors)
+- [All Contributors](https://github.com/rechtlogisch/deployer/graphs/contributors)
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/rechtlogisch/deployer/blob/main/LICENSE) for more information.
