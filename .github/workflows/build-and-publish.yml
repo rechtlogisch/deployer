@@ -16,6 +16,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      VERSION_PREFIX: ${{ matrix.tag == 'latest' && ' ' || format('{0}-', matrix.tag) }}
 
     name: PHP ${{ matrix.tag }}
 
@@ -51,8 +53,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Version prefix
-        env:
-          VERSION_PREFIX: ${{ matrix.tag == 'latest' && ' ' || format('{0}-', matrix.tag) }}
         run: echo ${{ env.VERSION_PREFIX }}
 
       - name: Build and push Docker image
