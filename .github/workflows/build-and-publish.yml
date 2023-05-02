@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        tag: [ '8.0', '8.1', '8.2' ]
+        tag: [ '8.0', '8.1', '8.2', 'latest' ]
     permissions:
       contents: read
       packages: write
@@ -50,6 +50,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Version prefix
+        id: prepare_prefix
+        run: [[ "${{ matrix.tag }}" == "latest" ]] && ( echo "version_prefix=" ) || ( echo "version_prefix=${{ matrix.tag }}-" )
+
       - name: Build and push Docker image
         id: docker_build
         uses: docker/build-push-action@v4.0.0
@@ -59,7 +63,7 @@ jobs:
           pull: true
           push: true
           build-args: |
-            "VERSION_PREFIX=${{ matrix.tag }}-"
+            "VERSION_PREFIX=${{ steps.prepare_prefix.outputs.version_prefix }}"
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.tag }}
           cache-to: type=inline
           tags: |
