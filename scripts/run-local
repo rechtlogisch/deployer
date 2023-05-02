@@ -11,6 +11,5 @@ docker run -it \
   --name deployer \
   -v "$1":/var/www \
   -w /var/www \
-  --platform "linux/amd64" \
   ghcr.io/rechtlogisch/deployer:"${IMAGE_TAG:-latest}" \
   $2

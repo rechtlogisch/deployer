@@ -1,5 +1,5 @@
 ARG VERSION_PREFIX=""
-FROM amd64/php:${VERSION_PREFIX}cli-alpine
+FROM php:${VERSION_PREFIX}cli-alpine
 LABEL maintainer="Recht logisch <https://rechtlogisch.de>"
 
 ## Set path

@@ -14,7 +14,7 @@ Features:
 - [Deployer 7](https://deployer.org/)
 - Very small size
 
-This Dockerfile is automagically built with a [GitHub Workflow](.github/workflows/build-and-publish.yml). Currently, only for the linux/amd64 platform. A separately hosted script checks for the newest stable PHP versions at ~5am UTC every day and triggers builds, when a new official PHP docker image is available.
+This Dockerfile is automagically built with a [GitHub Workflow](.github/workflows/build-and-publish.yml). A separately hosted script checks for the newest stable PHP versions at ~5am UTC every day and triggers builds, when a new official PHP docker image is available.
 
 # Usage
 
