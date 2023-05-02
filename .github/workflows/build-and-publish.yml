@@ -53,6 +53,7 @@ jobs:
       - name: Version prefix
         env:
           VERSION_PREFIX: ${{ matrix.tag == 'latest' && '' || '${{ matrix.tag }}-' }}
+        run: echo ${{ env.VERSION_PREFIX }}
 
       - name: Build and push Docker image
         id: docker_build
