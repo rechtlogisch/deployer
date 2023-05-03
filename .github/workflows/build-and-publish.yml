@@ -67,8 +67,8 @@ jobs:
           push: true
           build-args: |
             "VERSION_PREFIX=${{ env.VERSION_PREFIX }}"
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.tag }}
-          cache-to: type=inline
+          cache-from: type=gha
+          cache-to: type=gha,mode=min
           tags: |
             ${{ env.IMAGE_NAME }}:${{ matrix.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.tag }}
