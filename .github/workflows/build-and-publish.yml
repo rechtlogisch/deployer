@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        tag: [ '8.1', '8.2', '8.3', 'latest' ]
+        tag: [ '8.1', '8.2', '8.3', '8.4-rc', 'latest' ]
     permissions:
       contents: read
       packages: write
