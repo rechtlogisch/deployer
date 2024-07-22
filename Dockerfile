@@ -3,7 +3,7 @@ FROM php:${VERSION_PREFIX}cli-alpine
 LABEL maintainer="Recht logisch <https://rechtlogisch.de>"
 
 ## Set path
-ENV PATH_BIN /usr/bin
+ENV PATH_BIN=/usr/bin
 
 ## Install SSH
 RUN apk add -q --no-cache openssh-client
@@ -14,8 +14,8 @@ RUN composer -q --prefer-dist --no-ansi --no-interaction --no-progress global re
     rmdir /var/www/html
 
 ## Add Composer vendor into PATH
-ENV COMPOSER_PATH /root/.composer
-ENV PATH $COMPOSER_PATH/vendor/bin:$PATH
+ENV COMPOSER_PATH=/root/.composer
+ENV PATH=$COMPOSER_PATH/vendor/bin:$PATH
 
 ## When set, no output in Pipelines
 #USER www-data
