@@ -9,7 +9,7 @@ A custom image for CI Pipelines to install dependencies, run tests and deploy co
 Based on the currently supported stable PHP CLI Alpine ([cli-alpine](https://github.com/docker-library/docs/blob/master/php/README.md#supported-tags-and-respective-dockerfile-links)).
 
 Features:
-- PHP 8.4-rc / PHP 8.3 / PHP 8.2 / PHP 8.1 (based on [tags](https://hub.docker.com/repository/docker/rechtlogisch/deployer/tags))
+- PHP 8.4 / PHP 8.3 / PHP 8.2 / PHP 8.1 (based on [tags](https://hub.docker.com/repository/docker/rechtlogisch/deployer/tags))
 - [Composer 2](https://getcomposer.org/)
 - [Deployer 7](https://deployer.org/)
 - Very small size
