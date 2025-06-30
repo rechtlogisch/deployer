@@ -65,7 +65,8 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           pull: true
           push: true
-          provenance: false
+          provenance: mode=max
+          sbom: true
           build-args: |
             "VERSION_PREFIX=${{ env.VERSION_PREFIX }}"
           cache-from: type=gha
