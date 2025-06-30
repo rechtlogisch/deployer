@@ -1,8 +1,8 @@
 # PHP with Deployer and Composer
 
-[![GitHub Workflow actions](https://github.com/rechtlogisch/deployer/workflows/Build%20and%20publish%20Docker%20images/badge.svg)](https://github.com/rechtlogisch/deployer/actions)
+[![GitHub Workflow actions](https://github.com/rechtlogisch/deployer/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/rechtlogisch/deployer/actions)
+[![Size](https://img.shields.io/docker/image-size/rechtlogisch/deployer/latest)](https://github.com/rechtlogisch/deployer/pkgs/container/deployer)
 [![Tags](https://ghcr-badge.egpl.dev/rechtlogisch/deployer/tags)](https://github.com/rechtlogisch/deployer/pkgs/container/deployer)
-[![Size](https://ghcr-badge.egpl.dev/rechtlogisch/deployer/size?tag=latest)](https://github.com/rechtlogisch/deployer/pkgs/container/deployer)
 
 A custom image for CI Pipelines to install dependencies, run tests and deploy code to remote servers.  
 
