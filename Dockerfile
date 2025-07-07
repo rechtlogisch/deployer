@@ -18,7 +18,8 @@ ENV COMPOSER_PATH=/root/.composer
 ENV PATH=$COMPOSER_PATH/vendor/bin:$PATH
 
 ## Non-root user
-USER nobody
+## @todo: Gitlab SSH_PRIVATE_KEY: Operation not permitted
+#USER nobody
 
 ## Custom workdir intefers with SSH known hosts
 #WORKDIR /var/www
