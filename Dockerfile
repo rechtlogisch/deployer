@@ -17,8 +17,8 @@ RUN composer -q --prefer-dist --no-ansi --no-interaction --no-progress global re
 ENV COMPOSER_PATH=/root/.composer
 ENV PATH=$COMPOSER_PATH/vendor/bin:$PATH
 
-## When set, no output in Pipelines
-#USER www-data
+## Non-root user
+USER nobody
 
 ## Custom workdir intefers with SSH known hosts
 #WORKDIR /var/www
