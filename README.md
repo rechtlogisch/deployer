@@ -14,6 +14,8 @@ Features:
 - [Deployer 8](https://deployer.org/)
 - Very small size
 
+This is a pre-built image to be used directly in pipelines, not a base for other images. To keep it small, it contains only what is needed to run PHP. PHP sources and headers, `docker-php-ext-*`, `pecl`, `pear`, `phpize`, `php-cgi` and `phpdbg` of the official image are not included, so additional PHP extensions cannot be installed on top of it. If you need them, build on the [official PHP image](https://hub.docker.com/_/php) instead.
+
 This Dockerfile is automagically built with a [GitHub Workflow](https://github.com/rechtlogisch/deployer/actions/workflows/build-and-publish.yml). A separately hosted script checks for the newest stable PHP versions at ~5am UTC every day and triggers builds, when a new official PHP docker image is available.
 
 # Usage
