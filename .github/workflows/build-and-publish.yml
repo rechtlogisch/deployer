@@ -18,6 +18,7 @@ jobs:
       packages: write
     env:
       VERSION_PREFIX: ${{ matrix.tag == 'latest' && ' ' || format('{0}-', matrix.tag) }}
+      IMAGE_DESCRIPTION: ${{ matrix.tag == 'latest' && 'PHP Deployer and Composer' || format('PHP Deployer and Composer (PHP {0})', matrix.tag) }}
 
     name: PHP ${{ matrix.tag }}
 
@@ -49,10 +50,18 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v6.2.0
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
         with:
           images: |
             ${{ env.IMAGE_NAME }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.description=${{ env.IMAGE_DESCRIPTION }}
+            org.opencontainers.image.version=${{ matrix.tag }}
+          annotations: |
+            org.opencontainers.image.description=${{ env.IMAGE_DESCRIPTION }}
+            org.opencontainers.image.version=${{ matrix.tag }}
 
       - name: Version prefix
         run: echo ${{ env.VERSION_PREFIX }}
@@ -75,6 +84,7 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ matrix.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.tag }}
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
