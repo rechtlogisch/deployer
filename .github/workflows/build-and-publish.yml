@@ -86,6 +86,16 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
 
+      - name: Versions
+        run: |
+          {
+            echo '```'
+            docker run --rm --platform linux/amd64 --entrypoint sh \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.tag }} -c \
+              'php -r "echo PHP_VERSION;"; echo; composer --version; dep --version; ssh -V 2>&1'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
