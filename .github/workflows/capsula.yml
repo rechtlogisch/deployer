@@ -1,0 +1,142 @@
+name: Build and publish capsula variant (experimental)
+
+# Capsula bases are not on GHCR yet (php-cli-capsula PR unmerged) and the
+# package is private. Do NOT run on pull_request — builds would fail without
+# the published base and without package read access from fork PRs.
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [capsula-updated]
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile.capsula
+      - .github/workflows/capsula.yml
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+
+jobs:
+  build-and-push-capsula:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5', '8.6']
+    name: capsula PHP ${{ matrix.php }}
+    env:
+      IMAGE_DESCRIPTION: PHP Deployer on a minimal static PHP (experimental capsula variant)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4.8.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v6.2.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=false
+            suffix=-capsula,onlatest=true
+          tags: |
+            type=raw,value=${{ matrix.php }}
+            type=raw,value=latest,enable=${{ matrix.php == '8.6' }}
+          labels: |
+            org.opencontainers.image.description=${{ env.IMAGE_DESCRIPTION }}
+            org.opencontainers.image.version=${{ matrix.php }}-capsula
+          annotations: |
+            org.opencontainers.image.description=${{ env.IMAGE_DESCRIPTION }}
+            org.opencontainers.image.version=${{ matrix.php }}-capsula
+
+      - name: Build and push capsula image
+        id: docker_build
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: .
+          file: Dockerfile.capsula
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: mode=max
+          sbom: true
+          build-args: |
+            PHP_VERSION=${{ matrix.php }}
+          cache-from: type=gha,scope=capsula-${{ matrix.php }}
+          cache-to: type=gha,mode=max,scope=capsula-${{ matrix.php }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+
+      - name: Smoke test
+        run: |
+          set -euo pipefail
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.php }}-capsula"
+          docker pull --platform linux/amd64 "$IMAGE"
+
+          docker run --rm --platform linux/amd64 --entrypoint php "$IMAGE" -m
+          DEP_VER="$(docker run --rm --platform linux/amd64 --entrypoint dep "$IMAGE" --version)"
+          echo "$DEP_VER"
+          echo "$DEP_VER" | grep -qiE 'deployer [0-9]+\.[0-9]+' || {
+            echo "dep --version did not report a real version: $DEP_VER" >&2
+            exit 1
+          }
+          echo "$DEP_VER" | grep -qi master && {
+            echo "dep --version must not be 'master': $DEP_VER" >&2
+            exit 1
+          }
+          docker run --rm --platform linux/amd64 --entrypoint ssh "$IMAGE" -V
+          docker run --rm --platform linux/amd64 --entrypoint bash "$IMAGE" -c 'echo ok' | grep -qx ok
+
+          # Tiny deploy.php exercising runLocally
+          WORK="$(mktemp -d)"
+          cat > "$WORK/deploy.php" <<'PHP'
+          <?php
+          namespace Deployer;
+          localhost();
+          task('local:ping', function () {
+              $out = runLocally('echo runLocally-ok');
+              if (trim($out) !== 'runLocally-ok') {
+                  throw new \RuntimeException('unexpected: ' . $out);
+              }
+              writeln('runLocally-ok');
+          });
+          PHP
+          docker run --rm --platform linux/amd64 -v "$WORK:/work" -w /work \
+            --entrypoint dep "$IMAGE" local:ping | grep -q runLocally-ok
+          rm -rf "$WORK"
+
+      - name: Versions
+        run: |
+          set -euo pipefail
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.php }}-capsula"
+          {
+            echo "### capsula PHP ${{ matrix.php }}"
+            echo '```'
+            docker run --rm --platform linux/amd64 --entrypoint sh "$IMAGE" -c \
+              'php -r "echo \"PHP \".PHP_VERSION.PHP_EOL;"; dep --version; ssh -V 2>&1'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}

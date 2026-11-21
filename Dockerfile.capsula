@@ -1,0 +1,63 @@
+# syntax=docker/dockerfile:1.7
+# Experimental Deployer image on rechtlogisch/php-cli-capsula (GHCR only).
+# Final stage has no RUN steps — QEMU is not required for the consumer image.
+
+ARG PHP_VERSION=8.6
+
+# ---------------------------------------------------------------------------
+# Build Deployer vendor install on the native build platform (composer image).
+# Pin platform.php to <minor>.0 so Composer selects deps that match that PHP
+# (e.g. 8.3 → Symfony 7.4, not a newer component that needs 8.4+).
+# Layout matches COMPOSER_HOME: /root/.composer/vendor/bin/dep
+# ---------------------------------------------------------------------------
+FROM --platform=$BUILDPLATFORM composer:latest AS vendor
+ARG PHP_VERSION
+
+WORKDIR /root/.composer
+RUN set -eux; \
+    composer init --name=rechtlogisch/deployer-capsula --no-interaction; \
+    composer config platform.php "${PHP_VERSION}.0"; \
+    ## require has no --no-dev; --update-no-dev skips installing require-dev
+    composer require \
+        --update-no-dev \
+        --optimize-autoloader \
+        --classmap-authoritative \
+        --prefer-dist \
+        --no-ansi \
+        --no-interaction \
+        --no-progress \
+        "deployer/deployer:^8"; \
+    ## Prune vendor fluff; keep deployer recipe/ and contrib/ (and composer.lock
+    ## + vendor/composer/installed.json for dep --version and SBOM).
+    find vendor -type d \( -iname test -o -iname tests -o -name .github -o -name docs \) -prune -exec rm -rf {} +; \
+    find vendor -type f -name '*.md' \
+        ! -path '*/deployer/deployer/recipe/*' \
+        ! -path '*/deployer/deployer/contrib/*' \
+        -delete; \
+    test -f composer.lock; \
+    test -f vendor/composer/installed.json; \
+    test -x vendor/bin/dep; \
+    rm -rf /tmp/composer /root/.composer/cache
+
+# ---------------------------------------------------------------------------
+# Final: static PHP CLI base + Deployer vendor. No RUN in this stage.
+# ---------------------------------------------------------------------------
+ARG PHP_VERSION
+FROM ghcr.io/rechtlogisch/php-cli-capsula:${PHP_VERSION}
+
+LABEL maintainer="Recht logisch <https://rechtlogisch.de>"
+LABEL org.opencontainers.image.description="PHP Deployer on a minimal static PHP (experimental capsula variant)"
+
+COPY --from=vendor /root/.composer /root/.composer
+
+# Capsula base already sets PATH and HOME; extend PATH with dep and set telemetry opt-out.
+ENV COMPOSER_PATH=/root/.composer \
+    PATH=/root/.composer/vendor/bin:/usr/local/bin:/usr/bin:/bin \
+    HOME=/root \
+    DO_NOT_TRACK=true
+
+# The official php image uses ENTRYPOINT ["docker-php-entrypoint"] with
+# CMD ["php", "-a"]. That helper is a thin exec wrapper and is not present in
+# the static capsula base. Omitting ENTRYPOINT keeps `docker run … dep …`
+# working (CMD is replaced) while preserving the same default interactive PHP.
+CMD ["php", "-a"]
