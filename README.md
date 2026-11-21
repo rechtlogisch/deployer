@@ -1,20 +1,22 @@
-# PHP with Deployer and Composer
+# PHP with Deployer
 
 [![GitHub Workflow actions](https://github.com/rechtlogisch/deployer/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/rechtlogisch/deployer/actions)
 [![Size](https://img.shields.io/docker/image-size/rechtlogisch/deployer/latest)](https://github.com/rechtlogisch/deployer/pkgs/container/deployer)
 [![Tags](https://ghcr-badge.egpl.dev/rechtlogisch/deployer/tags)](https://github.com/rechtlogisch/deployer/pkgs/container/deployer)
 
-A custom image for CI Pipelines to install dependencies, run tests and deploy code to remote servers.  
+A custom image for CI Pipelines to run tests and deploy code to remote servers with [Deployer](https://deployer.org/).
 
 Based on the currently supported stable PHP CLI Alpine ([cli-alpine](https://github.com/docker-library/docs/blob/master/php/README.md#supported-tags-and-respective-dockerfile-links)).
 
 Features:
 - PHP 8.6 / PHP 8.5 / PHP 8.4 / PHP 8.3 / PHP 8.2 (based on [tags](https://hub.docker.com/repository/docker/rechtlogisch/deployer/tags))
-- [Composer 2](https://getcomposer.org/)
-- [Deployer 8](https://deployer.org/)
+- [Deployer 8](https://deployer.org/) (`dep`)
+- OpenSSH client (`ssh`, `ssh-agent`, `ssh-add`, `ssh-keyscan`, `scp`)
 - Very small size
 
-This is a pre-built image to be used directly in pipelines, not a base for other images. To keep it small, it contains only what is needed to run PHP. PHP sources and headers, `docker-php-ext-*`, `pecl`, `pear`, `phpize`, `php-cgi` and `phpdbg` of the official image are not included, so additional PHP extensions cannot be installed on top of it. If you need them, build on the [official PHP image](https://hub.docker.com/_/php) instead.
+Composer is **not** included: Deployer's `deploy:vendors` runs Composer on the **remote** host (and downloads it there if missing). Install project dependencies in a separate CI step or image if needed.
+
+This is a pre-built image to be used directly in pipelines, not a base for other images. To keep it small, it contains only what is needed to run PHP and Deployer. PHP sources and headers, `docker-php-ext-*`, `pecl`, `pear`, `phpize`, `php-cgi` and `phpdbg` of the official image are not included, and `apk` is removed, so packages or PHP extensions cannot be installed on top of it. If you need them, use a multi-stage build based on the [official PHP image](https://hub.docker.com/_/php) instead.
 
 This Dockerfile is automagically built with a [GitHub Workflow](https://github.com/rechtlogisch/deployer/actions/workflows/build-and-publish.yml). A separately hosted script checks for the newest stable PHP versions at ~5am UTC every day and triggers builds, when a new official PHP docker image is available.
 
