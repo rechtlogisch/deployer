@@ -56,8 +56,9 @@ ENV COMPOSER_PATH=/root/.composer \
     HOME=/root \
     DO_NOT_TRACK=true
 
-# The official php image uses ENTRYPOINT ["docker-php-entrypoint"] with
-# CMD ["php", "-a"]. That helper is a thin exec wrapper and is not present in
-# the static capsula base. Omitting ENTRYPOINT keeps `docker run … dep …`
-# working (CMD is replaced) while preserving the same default interactive PHP.
-CMD ["php", "-a"]
+# Official image: ENTRYPOINT ["docker-php-entrypoint"] + CMD ["php", "-a"].
+# Capsula has no docker-php-entrypoint and no readline, so PHP 8.3+ rejects
+# `php -a` ("Interactive shell (-a) requires the readline extension").
+# Match the capsula base default instead; omit ENTRYPOINT so `docker run … dep …`
+# still replaces CMD.
+CMD ["php", "-v"]

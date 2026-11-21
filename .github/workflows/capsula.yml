@@ -25,6 +25,10 @@ env:
 jobs:
   build-and-push-capsula:
     runs-on: ubuntu-latest
+    # One publisher per PHP minor; do not cancel an in-flight publish.
+    concurrency:
+      group: capsula-${{ matrix.php }}
+      cancel-in-progress: false
     strategy:
       fail-fast: false
       matrix:
@@ -70,29 +74,34 @@ jobs:
             org.opencontainers.image.description=${{ env.IMAGE_DESCRIPTION }}
             org.opencontainers.image.version=${{ matrix.php }}-capsula
 
-      - name: Build and push capsula image
+      # Push by digest only — consumer tags (8.x-capsula / latest-capsula) are
+      # applied after smoke tests so a failing image never updates those tags.
+      - name: Build and push by digest
         id: docker_build
         uses: docker/build-push-action@v7.4.0
         with:
           context: .
           file: Dockerfile.capsula
           platforms: linux/amd64,linux/arm64
-          push: true
           provenance: mode=max
           sbom: true
           build-args: |
             PHP_VERSION=${{ matrix.php }}
           cache-from: type=gha,scope=capsula-${{ matrix.php }}
           cache-to: type=gha,mode=max,scope=capsula-${{ matrix.php }}
-          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
-      - name: Smoke test
+      - name: Smoke test (immutable digest)
+        env:
+          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}
         run: |
           set -euo pipefail
-          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.php }}-capsula"
           docker pull --platform linux/amd64 "$IMAGE"
+
+          # Default CMD must work without readline (php -v, not php -a)
+          docker run --rm --platform linux/amd64 "$IMAGE" | grep -E '^PHP '
 
           docker run --rm --platform linux/amd64 --entrypoint php "$IMAGE" -m
           DEP_VER="$(docker run --rm --platform linux/amd64 --entrypoint dep "$IMAGE" --version)"
@@ -126,12 +135,28 @@ jobs:
             --entrypoint dep "$IMAGE" local:ping | grep -q runLocally-ok
           rm -rf "$WORK"
 
-      - name: Versions
+      - name: Promote consumer tags
+        env:
+          DIGEST: ${{ steps.docker_build.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
         run: |
           set -euo pipefail
-          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.php }}-capsula"
+          args=()
+          while IFS= read -r tag; do
+            [ -n "$tag" ] || continue
+            args+=(-t "$tag")
+          done <<< "$TAGS"
+          docker buildx imagetools create "${args[@]}" \
+            "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${DIGEST}"
+
+      - name: Versions
+        env:
+          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}
+        run: |
+          set -euo pipefail
           {
             echo "### capsula PHP ${{ matrix.php }}"
+            echo "Digest: \`${{ steps.docker_build.outputs.digest }}\`"
             echo '```'
             docker run --rm --platform linux/amd64 --entrypoint sh "$IMAGE" -c \
               'php -r "echo \"PHP \".PHP_VERSION.PHP_EOL;"; dep --version; ssh -V 2>&1'
