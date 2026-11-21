@@ -33,6 +33,32 @@ Feel free to use `ghcr.io/rechtlogisch/deployer` or `rechtlogisch/deployer` with
 
 * [Access private repositories with your Pipeline SSH Key](https://github.com/rechtlogisch/deployer/wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
 
+## Experimental `-capsula` tags (GHCR only)
+
+Optional ultra-small Deployer images built on [`rechtlogisch/php-cli-capsula`](https://github.com/rechtlogisch/php-cli-capsula) (static PHP CLI with curl+iconv only, static OpenSSH ed25519 client, BusyBox). Published to **GHCR only** — not Docker Hub. Plain tags (`8.3`, `latest`, …) stay on the official `php-cli` Alpine variant.
+
+| Tag | Meaning |
+| --- | --- |
+| `8.3-capsula` … `8.6-capsula` | Deployer on that PHP minor |
+| `latest-capsula` | Same as `8.6-capsula` |
+
+Measured sizes (linux/amd64, `docker export | wc -c` unpacked rootfs):
+
+| Tag | Base | + vendor ≈ | Image (unpacked) | Image (gzip) |
+| --- | ---: | ---: | ---: | ---: |
+| `8.3-capsula` | ~6.8 MB | ~2.3 MB | **9.56 MiB** | **3.60 MiB** |
+| `8.6-capsula` / `latest-capsula` | ~11.8 MB | ~3.0 MB | **14.72 MiB** | **4.75 MiB** |
+
+Limitations vs the main image:
+
+- **No Composer** in the image (`deploy:vendors` runs Composer on the remote host)
+- **No `apk`** — cannot install packages into the running container
+- **ed25519 SSH keys only** (OpenSSH built without OpenSSL)
+- **No `scp` / `ssh-keygen` / `rsync`** — Deployer `upload`/`download` need rsync on both sides
+- **PHP extensions:** curl + iconv only
+
+Workflow: [`.github/workflows/capsula.yml`](.github/workflows/capsula.yml) (`workflow_dispatch`, `repository_dispatch` `capsula-updated`, push to `main` touching the capsula files). Does **not** run on `pull_request` because the private capsula base may be unavailable to PR runners.
+
 ## Supply-chain attestations
 
 The `unknown/unknown` entries shown for a tag on GHCR are BuildKit provenance (`provenance: mode=max`) and SBOM attestation manifests (enabled in [e0618b5](https://github.com/rechtlogisch/deployer/commit/e0618b5)), not runnable images. `docker pull` ignores them. This is expected because GHCR does not support OCI referrers yet ([docker/buildx#3047](https://github.com/docker/buildx/issues/3047)).
