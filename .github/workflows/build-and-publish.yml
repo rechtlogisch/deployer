@@ -18,7 +18,7 @@ jobs:
       packages: write
     env:
       VERSION_PREFIX: ${{ matrix.tag == 'latest' && ' ' || format('{0}-', matrix.tag) }}
-      IMAGE_DESCRIPTION: ${{ matrix.tag == 'latest' && 'PHP Deployer and Composer' || format('PHP Deployer and Composer (PHP {0})', matrix.tag) }}
+      IMAGE_DESCRIPTION: ${{ matrix.tag == 'latest' && 'PHP with Deployer' || format('PHP {0} with Deployer and Composer', matrix.tag) }}
 
     name: PHP ${{ matrix.tag }}
 
@@ -92,7 +92,7 @@ jobs:
             echo '```'
             docker run --rm --entrypoint sh \
               ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.tag }} -c \
-              'php -r "echo PHP_VERSION;"; echo; composer --version; dep --version; ssh -V 2>&1'
+              'php -r "echo PHP_VERSION . PHP_EOL;"; dep --version; ssh -V 2>&1'
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
 
