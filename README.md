@@ -33,6 +33,17 @@ Feel free to use `ghcr.io/rechtlogisch/deployer` or `rechtlogisch/deployer` with
 
 * [Access private repositories with your Pipeline SSH Key](https://github.com/rechtlogisch/deployer/wiki/Access-private-repositories-with-your-Pipeline-SSH-Key)
 
+## Supply-chain attestations
+
+The `unknown/unknown` entries shown for a tag on GHCR are BuildKit provenance (`provenance: mode=max`) and SBOM attestation manifests (enabled in [e0618b5](https://github.com/rechtlogisch/deployer/commit/e0618b5)), not runnable images. `docker pull` ignores them. This is expected because GHCR does not support OCI referrers yet ([docker/buildx#3047](https://github.com/docker/buildx/issues/3047)).
+
+Inspect them with:
+
+```bash
+docker buildx imagetools inspect ghcr.io/rechtlogisch/deployer:latest --format '{{json .Provenance}}'
+docker buildx imagetools inspect ghcr.io/rechtlogisch/deployer:latest --format '{{json .SBOM}}'
+```
+
 ## Contributing
 
 Please see [CONTRIBUTING](https://github.com/rechtlogisch/deployer/blob/main/.github/CONTRIBUTING.md) for details.
